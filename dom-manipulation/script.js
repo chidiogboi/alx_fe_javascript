@@ -99,18 +99,29 @@ function exportToJsonFile() {
   link.click();
 }
 
-function syncWithServer() {
+// ✅ NEW FUNCTION: fetchQuotesFromServer
+function fetchQuotesFromServer() {
   fetch('https://jsonplaceholder.typicode.com/posts')
     .then(res => res.json())
-    .then(serverQuotes => {
-      // simulate server sending updated quotes with no conflict resolution
-      quotes = [...quotes, ...serverQuotes.map(p => ({
-        text: p.title,
+    .then(serverData => {
+      const newQuotes = serverData.slice(0, 5).map(post => ({
+        text: post.title,
         category: "Server"
-      }))];
+      }));
+
+      // simple conflict resolution: only add if not already in quotes
+      newQuotes.forEach(q => {
+        if (!quotes.some(localQ => localQ.text === q.text)) {
+          quotes.push(q);
+        }
+      });
+
       saveQuotes();
       populateCategories();
-      alert("Synced with server!");
+      alert("Synced with server successfully!");
+    })
+    .catch(err => {
+      console.error("Failed to sync with server:", err);
     });
 }
 
@@ -124,6 +135,9 @@ window.onload = () => {
     const q = JSON.parse(lastQuote);
     quoteDisplay.textContent = `"${q.text}" - [${q.category}]`;
   }
-  setInterval(syncWithServer, 30000); // auto sync every 30 seconds
+
+  fetchQuotesFromServer(); // call it once on load
+  setInterval(fetchQuotesFromServer, 30000); // auto sync every 30 seconds
 };
+
 
