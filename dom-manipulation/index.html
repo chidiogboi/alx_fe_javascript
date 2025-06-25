@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Quote Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    #quoteDisplay {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      min-height: 100px;
+    }
+    button {
+      padding: 8px 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    input, select {
+      padding: 8px;
+      margin: 5px;
+      width: 300px;
+    }
+    #addQuoteForm {
+      margin-top: 20px;
+      padding: 20px;
+      border: 1px solid #eee;
+      border-radius: 5px;
+    }
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px;
+      background-color: #f8f9fa;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>Dynamic Quote Generator</h1>
+  
+  <div>
+    <label for="categoryFilter">Filter by category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
+      <option value="all">All Categories</option>
+      <!-- Dynamically populated -->
+    </select>
+  </div>
+  
+  <div id="quoteDisplay"></div>
+  
+  <button id="newQuote">Show New Quote</button>
+  
+  <div id="addQuoteForm">
+    <h3>Add New Quote</h3>
+    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
+    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
+    <button onclick="addQuote()">Add Quote</button>
+  </div>
+
+  <div>
+    <h3>Data Management</h3>
+    <button onclick="exportToJsonFile()">Export Quotes to JSON</button>
+    <br>
+    <label for="importFile">Import Quotes from JSON:</label>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    <br>
+    <button onclick="syncWithServer()">Sync with Server</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
