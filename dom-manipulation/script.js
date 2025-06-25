@@ -99,30 +99,29 @@ function exportToJsonFile() {
   link.click();
 }
 
-// ✅ NEW FUNCTION: fetchQuotesFromServer
-function fetchQuotesFromServer() {
-  fetch('https://jsonplaceholder.typicode.com/posts')
-    .then(res => res.json())
-    .then(serverData => {
-      const newQuotes = serverData.slice(0, 5).map(post => ({
-        text: post.title,
-        category: "Server"
-      }));
+// ✅ async/await version of server fetch
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    const serverData = await response.json();
 
-      // simple conflict resolution: only add if not already in quotes
-      newQuotes.forEach(q => {
-        if (!quotes.some(localQ => localQ.text === q.text)) {
-          quotes.push(q);
-        }
-      });
+    const newQuotes = serverData.slice(0, 5).map(post => ({
+      text: post.title,
+      category: "Server"
+    }));
 
-      saveQuotes();
-      populateCategories();
-      alert("Synced with server successfully!");
-    })
-    .catch(err => {
-      console.error("Failed to sync with server:", err);
+    newQuotes.forEach(q => {
+      if (!quotes.some(localQ => localQ.text === q.text)) {
+        quotes.push(q);
+      }
     });
+
+    saveQuotes();
+    populateCategories();
+    console.log("Synced with server successfully.");
+  } catch (error) {
+    console.error("Error syncing with server:", error);
+  }
 }
 
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
@@ -136,7 +135,7 @@ window.onload = () => {
     quoteDisplay.textContent = `"${q.text}" - [${q.category}]`;
   }
 
-  fetchQuotesFromServer(); // call it once on load
+  fetchQuotesFromServer(); // first sync on page load
   setInterval(fetchQuotesFromServer, 30000); // auto sync every 30 seconds
 };
 
